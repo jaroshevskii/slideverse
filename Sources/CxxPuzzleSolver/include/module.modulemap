@@ -1,0 +1,5 @@
+module CxxPuzzleSolver {
+  header "CxxPuzzleSolver.h"
+  requires cplusplus
+  export *
+}
