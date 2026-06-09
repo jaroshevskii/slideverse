@@ -1,7 +1,7 @@
 # Slideverse
 
 A modern sliding-tile puzzle (the classic *fifteen-puzzle*, generalized to 3×3 / 4×4 / 5×5)
-for iOS 26, built with the [Composable Architecture][tca] and the [Point-Free][pf] ecosystem.
+for iOS 27, built with the [Composable Architecture][tca] and the [Point-Free][pf] ecosystem.
 
 Originally a C++/raylib desktop game, Slideverse was re-implemented in Swift as a
 **hyper-modular** SwiftUI app — with an optimal **C++ solver** still doing the heavy lifting
@@ -22,7 +22,7 @@ where native speed actually matters.
 - **Scoring, stats & streaks** — every finished game is persisted locally; the Stats screen
   shows best times per size, your high score, daily streak, and unlocked achievements.
 - **Achievements** — First Win, Speedy (under 1:00), No Hints, Daily Devotee, Big Board (5×5).
-- **iOS 26 polish** — zoom navigation transitions, `matchedGeometryEffect` tile sliding,
+- **iOS 27 polish** — zoom navigation transitions, `matchedGeometryEffect` tile sliding,
   `numericText` content transitions, SF Symbol effects, a grouped `Form` for Settings, and a
   confetti celebration on victory.
 - **Settings** — light/dark/system appearance, sound effects, haptics, and default board size,
@@ -197,7 +197,7 @@ score = max(0, boardSize² · 100  −  moves · 5  −  seconds · 2  −  (use
 
 ## Tech stack
 
-- **Swift 6.2**, **iOS 26** (package also builds for macOS so logic tests run on the host)
+- **Swift 6.4**, **iOS 27** (package also builds for macOS so logic tests run on the host)
 - The Composable Architecture · Dependencies · Sharing · SQLiteData · SwiftNavigation
 - **C++17** via Swift/C++ interoperability
 - Swift Testing (`@Test` / `@Suite`) + TCA `TestStore`
@@ -206,21 +206,24 @@ score = max(0, boardSize² · 100  −  moves · 5  −  seconds · 2  −  (use
 
 ## Building & running
 
-The app and the Swift package are integrated through `App/Slideverse.xcodeproj`, which
-references the local package and links the `AppFeature` product.
+The app and the Swift package are integrated through **`Slideverse.xcworkspace`**, which
+references both the app project (`App/Slideverse.xcodeproj`) and the local package; the app
+target links the `AppFeature` product. Always open the **workspace**, not the project.
 
 ```sh
 # Build & test the package (logic, solver, persistence, reducers) on the Mac:
 swift build
 swift test
 
-# Build the iOS app:
-xcodebuild -project App/Slideverse.xcodeproj -scheme Slideverse \
-  -destination 'generic/platform=iOS Simulator' build
+# Build the iOS app via the workspace:
+xcodebuild -workspace Slideverse.xcworkspace -scheme Slideverse \
+  -destination 'generic/platform=iOS Simulator' \
+  -skipMacroValidation build
 ```
 
-Or just open `App/Slideverse.xcodeproj` in Xcode and run — the local Swift package resolves
-automatically, and the database bootstraps on launch.
+Or just open `Slideverse.xcworkspace` in Xcode and run — the local Swift package resolves
+automatically, and the database bootstraps on launch. (`-skipMacroValidation` is only needed
+for headless/CI builds; in the GUI you approve the macro plugins once.)
 
 ---
 
@@ -258,8 +261,28 @@ slideverse/
 │   ├── SettingsFeature/     # settings form
 │   └── AppFeature/          # root navigation
 ├── Tests/                   # one suite per module
-└── App/Slideverse.xcodeproj # iOS app target
+├── App/Slideverse.xcodeproj # iOS app target (thin shell)
+└── Slideverse.xcworkspace   # open this — wraps the project + local package
 ```
+
+---
+
+## Data & privacy
+
+All player data is **on-device only** — there is no network layer and nothing leaves the phone.
+
+- **What's stored:** finished games and unlocked achievements in a SQLite database
+  (`completedGames`, `achievements`), plus user preferences in `userSettings.json`.
+- **Where:** the app's **Application Support** directory — not `Documents`, so it isn't exposed
+  through the Files app or device file sharing.
+- **At rest:** iOS applies `NSFileProtectionCompleteUntilFirstUserAuthentication` to app files by
+  default, so the database is encrypted while the device is locked yet still writable in the
+  background. A stricter class (`.complete`) is intentionally **not** used — it would break writes
+  that land while the screen is locked.
+- **Backup:** progress is included in the standard iCloud/iTunes backup (players expect their
+  stats to restore on a new device); it is deliberately **not** marked `isExcludedFromBackup`.
+- **Integrity:** every runtime database read/write goes through `withErrorReporting`, so a failure
+  surfaces as a visible issue in development without crashing players in production.
 
 ---
 

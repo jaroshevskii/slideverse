@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Build & Test
+    # NOTE: Slideverse targets the iOS 27 SDK (Xcode 27). GitHub-hosted images
+    # only carry that toolchain once it ships; until then use a self-hosted
+    # runner with Xcode 27 installed, or bump the image label below after GA.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 27
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "27.0"
+
+      - name: Toolchain versions
+        run: |
+          swift --version
+          xcodebuild -version
+
+      - name: Build & test package
+        run: swift test
+
+      - name: Build app (workspace)
+        run: |
+          xcodebuild \
+            -workspace Slideverse.xcworkspace \
+            -scheme Slideverse \
+            -destination 'generic/platform=iOS Simulator' \
+            -skipMacroValidation \
+            -skipPackagePluginValidation \
+            build

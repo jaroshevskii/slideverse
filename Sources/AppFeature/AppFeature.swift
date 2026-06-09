@@ -9,7 +9,7 @@ import StatsFeature
 
 @Reducer
 public struct AppReducer {
-  @Reducer(state: .equatable)
+  @Reducer
   public enum Path {
     case game(Game)
     case howToPlay(HowToPlay)
@@ -71,3 +71,5 @@ public struct AppReducer {
     .forEach(\.path, action: \.path)
   }
 }
+
+extension AppReducer.Path.State: Equatable {}

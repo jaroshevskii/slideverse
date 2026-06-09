@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,19 +6,19 @@ import PackageDescription
 let package = Package(
   name: "slideverse",
   platforms: [
-    .iOS(.v26),
-    .macOS(.v26),
+    .iOS(.v27),
+    .macOS(.v27),
   ],
   products: [
     .library(name: "AppFeature", targets: ["AppFeature"]),
     .library(name: "PuzzleCore", targets: ["PuzzleCore"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.0.0"),
-    .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0"),
-    .package(url: "https://github.com/pointfreeco/swift-navigation", from: "2.0.0"),
-    .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.0.0"),
-    .package(url: "https://github.com/pointfreeco/sqlite-data", from: "1.0.0"),
+    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", .upToNextMinor(from: "1.26.0")),
+    .package(url: "https://github.com/pointfreeco/swift-dependencies", .upToNextMinor(from: "1.13.0")),
+    .package(url: "https://github.com/pointfreeco/swift-navigation", .upToNextMinor(from: "2.8.0")),
+    .package(url: "https://github.com/pointfreeco/swift-sharing", .upToNextMinor(from: "2.8.1")),
+    .package(url: "https://github.com/pointfreeco/sqlite-data", .upToNextMinor(from: "1.6.5")),
   ],
   targets: [
     .target(name: "PuzzleCore"),
@@ -151,5 +151,5 @@ let package = Package(
       swiftSettings: [.interoperabilityMode(.Cxx)]
     ),
   ],
-  cxxLanguageStandard: .cxx17
+  cxxLanguageStandard: .cxx2b
 )
