@@ -1,32 +1,54 @@
+<div align="center">
+
 # Slideverse
 
-A modern sliding-tile puzzle (the classic *fifteen-puzzle*, generalized to 3×3 / 4×4 / 5×5)
-for iOS 27, built with the [Composable Architecture][tca] and the [Point-Free][pf] ecosystem.
+**A modern sliding-tile puzzle for iOS — pure Swift logic, an optimal C++ solver, and a hyper-modular Composable Architecture.**
 
-Originally a C++/raylib desktop game, Slideverse was re-implemented in Swift as a
-**hyper-modular** SwiftUI app — with an optimal **C++ solver** still doing the heavy lifting
-where native speed actually matters.
+[![CI](https://github.com/jaroshevskii/slideverse/actions/workflows/ci.yml/badge.svg)](https://github.com/jaroshevskii/slideverse/actions/workflows/ci.yml)
+[![Swift 6.4](https://img.shields.io/badge/Swift-6.4-F05138?logo=swift&logoColor=white)](https://swift.org)
+[![Platforms](https://img.shields.io/badge/Platforms-iOS%2027%20%7C%20macOS%2027-0A84FF?logo=apple&logoColor=white)](https://developer.apple.com)
+[![Architecture](https://img.shields.io/badge/Architecture-TCA-1B1B1F)](https://github.com/pointfreeco/swift-composable-architecture)
+[![License](https://img.shields.io/badge/License-MIT-success)](LICENSE)
 
-[tca]: https://github.com/pointfreeco/swift-composable-architecture
+</div>
+
+Slideverse is the classic *fifteen-puzzle*, generalized to 3×3 / 4×4 / 5×5. Originally a
+C++/raylib desktop game, it was re-implemented in Swift as a **hyper-modular** SwiftUI app built
+on the [Point-Free][pf] ecosystem — with the original **C++ solver** still doing the heavy
+lifting where native speed actually matters.
+
 [pf]: https://www.pointfree.co
+[tca]: https://github.com/pointfreeco/swift-composable-architecture
+
+---
+
+## Contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+- [C++ interoperability](#c-interoperability)
+- [Data & persistence](#data--persistence)
+- [Requirements](#requirements)
+- [Building & running](#building--running)
+- [Testing](#testing)
+- [Project layout](#project-layout)
+- [Data & privacy](#data--privacy)
+- [License](#license)
 
 ---
 
 ## Features
 
-- **Three board sizes** — 3×3, 4×4, and 5×5, switchable on the fly.
-- **Hint & Auto-solve** — an optimal IDA* solver (in C++) highlights the next best move, or
-  animates the puzzle to completion. Available on 3×3 and 4×4.
-- **Undo & Pause** — step moves back; pause freezes the timer and blurs the board.
-- **Daily Challenge** — a date-seeded board that's identical for everyone on a given day.
-- **Scoring, stats & streaks** — every finished game is persisted locally; the Stats screen
-  shows best times per size, your high score, daily streak, and unlocked achievements.
-- **Achievements** — First Win, Speedy (under 1:00), No Hints, Daily Devotee, Big Board (5×5).
-- **iOS 27 polish** — zoom navigation transitions, `matchedGeometryEffect` tile sliding,
-  `numericText` content transitions, SF Symbol effects, a grouped `Form` for Settings, and a
-  confetti celebration on victory.
-- **Settings** — light/dark/system appearance, sound effects, haptics, and default board size,
-  persisted with `@Shared`.
+| | |
+|---|---|
+| 🧩 **Three board sizes** | 3×3, 4×4, and 5×5, switchable on the fly. |
+| 💡 **Hint & Auto-solve** | An optimal IDA\* solver (C++) highlights the next best move, or animates the puzzle to completion (3×3 / 4×4). |
+| ↩️ **Undo & Pause** | Step moves back; pause freezes the timer and blurs the board. |
+| 📅 **Daily Challenge** | A date-seeded board that's identical for everyone on a given day. |
+| 🏆 **Scoring, stats & streaks** | Every finished game is persisted locally; best times per size, high score, daily streak. |
+| 🎖️ **Achievements** | First Win, Speedy (under 1:00), No Hints, Daily Devotee, Big Board (5×5). |
+| ✨ **iOS 27 polish** | Zoom navigation transitions, `matchedGeometryEffect` sliding, `numericText` transitions, SF Symbol effects, confetti on victory. |
+| ⚙️ **Settings** | Light/dark/system appearance, sound effects, haptics, and default board size — persisted with `@Shared`. |
 
 ---
 
@@ -65,7 +87,7 @@ app shell that composes them — the same modularization philosophy as [isowords
 | Module | Responsibility |
 |---|---|
 | **PuzzleCore** | Pure value types & rules: `Board`, `Tile`, adjacency, inversion-count solvability, scramble, scoring. No UI, no dependencies. |
-| **CxxPuzzleSolver** | C++ target — optimal IDA* solver (Manhattan + linear-conflict heuristic). |
+| **CxxPuzzleSolver** | C++ target — optimal IDA\* solver (Manhattan + linear-conflict heuristic). |
 | **PuzzleSolver** | Swift C++-interop wrapper exposing `PuzzleSolverClient` (a controllable dependency). |
 | **Models** | SQLiteData `@Table` records (`CompletedGame`, `Achievement`) + `bootstrapDatabase()` migrations. |
 | **Settings** | `UserSettings` persisted via `@Shared(.userSettings)` file storage. |
@@ -80,7 +102,7 @@ app shell that composes them — the same modularization philosophy as [isowords
 
 Every side effect is a small, testable client following the isowords pattern — defined with
 `@DependencyClient`, registered on `DependencyValues`, with `liveValue` / `testValue` /
-`previewValue` implementations. For example:
+`previewValue` implementations:
 
 ```swift
 @DependencyClient
@@ -97,12 +119,30 @@ Reducers declare what they need (`@Dependency(\.puzzleSolver)`, `\.continuousClo
 `\.defaultDatabase`, `\.haptics`, …), so tests swap in controlled implementations with zero
 global state.
 
+### Navigation
+
+Navigation is **state-driven**. `AppReducer` owns a `StackState<Path.State>`, where `Path` is a
+`@Reducer enum` of every destination (`game`, `howToPlay`, `settings`, `stats`). The view binds
+it directly:
+
+```swift
+NavigationStack(path: $store.scope(state: \.path, action: \.path)) { HomeView(…) }
+  destination: { store in
+    switch store.case { case let .game(store): GameView(store: store); … }
+  }
+```
+
+Child features emit *intents* (`store.send(.playButtonTapped)`); the parent decides what to push.
+Modal flows (e.g. the Settings reset alert) use tree-based `@Presents` + `.ifLet`. Because
+navigation is just data, deep links, state restoration, and synchronous `TestStore` coverage all
+come for free.
+
 ---
 
 ## C++ interoperability
 
-The sliding-puzzle's one genuinely compute-heavy task is **optimal solving**, so that's the
-only thing written in C++ — using [Swift's C++ interop][cxx].
+The sliding-puzzle's one genuinely compute-heavy task is **optimal solving**, so that's the only
+thing written in C++ — using [Swift's C++ interop][cxx].
 
 [cxx]: https://www.swift.org/documentation/cxx-interop/
 
@@ -119,7 +159,8 @@ Inside, it runs **IDA\*** with an admissible **Manhattan-distance + linear-confl
 so the returned move sequence is provably optimal.
 
 **`PuzzleSolver`** (Swift, built with `.interoperabilityMode(.Cxx)`) bridges it to a clean Swift
-API and wraps it as a dependency that runs off the main actor:
+API behind a dependency that runs off the main actor. The C++ module is brought in with
+`internal import CxxPuzzleSolver`, so **no C++ type leaks into the public Swift API**:
 
 ```swift
 public static func solution(for board: Board) -> [Int] {
@@ -138,22 +179,24 @@ public static func solution(for board: Board) -> [Int] {
 
 IDA\* time grows with the *optimal solution depth*. Full random permutations can be ~50+ moves
 deep (seconds to solve), so gameplay scrambles by a **bounded number of random moves**
-(`Board.scrambled(size:moves:)`) — this keeps the optimal depth small and solves sub-second.
-The solver also has a node budget and returns "no solution" gracefully, and Hint/Auto-solve are
-gated to ≤4×4 (`State.canUseSolver`).
+(`Board.scrambled(size:moves:)`) — keeping optimal depth small and solves sub-second. The solver
+also has a node budget and returns "no solution" gracefully; Hint/Auto-solve are gated to ≤4×4
+(`State.canUseSolver`).
 
 ### The interop cascade (build setup)
 
-A clang module that `requires cplusplus` cascades up the import graph: **every** Swift target
-that transitively imports `PuzzleSolver` must also enable C++ interop. In `Package.swift`:
+> [!IMPORTANT]
+> A clang module that `requires cplusplus` cascades up the import graph: **every** Swift target
+> that transitively imports `PuzzleSolver` must also enable C++ interop. `internal import` hides
+> C++ from the *API*, but not from the *build graph*.
 
 ```swift
 .target(
   name: "GameFeature",
   dependencies: [/* … */ "PuzzleSolver"],
-  swiftSettings: [.interoperabilityMode(.Cxx)]   // also: AppFeature, the test targets
+  swiftSettings: [.interoperabilityMode(.Cxx)]   // also: AppFeature + the test targets
 )
-// package-level: cxxLanguageStandard: .cxx17
+// package-level: cxxLanguageStandard: .cxx2b
 ```
 
 The Xcode app target imports `AppFeature`, so it sets
@@ -165,7 +208,7 @@ The Xcode app target imports `AppFeature`, so it sets
 
 Game history is stored locally with **[SQLiteData]** (type-safe SQL via `@Table`, observed with
 `@FetchAll`). The schema is created with `DatabaseMigrator` + `#sql` statements in
-`Models/Schema.swift`, and the app installs it at launch:
+`Models/Schema.swift`, installed at launch:
 
 [SQLiteData]: https://github.com/pointfreeco/sqlite-data
 
@@ -180,14 +223,12 @@ Game history is stored locally with **[SQLiteData]** (type-safe SQL via `@Table`
 - **`Achievement`** — unlocked achievements (unique by key).
 
 Stats screens read reactively with `@FetchAll`; the game writes results inside a reducer effect
-wrapped in `withErrorReporting`.
-
-User preferences use the **[Sharing]** library — a single `UserSettings` value persisted to disk
-and shared app-wide via `@Shared(.userSettings)`.
+wrapped in `withErrorReporting`. User preferences use the **[Sharing]** library — a single
+`UserSettings` value persisted to disk and shared app-wide via `@Shared(.userSettings)`.
 
 [Sharing]: https://github.com/pointfreeco/swift-sharing
 
-### Scoring
+**Scoring**
 
 ```
 score = max(0, boardSize² · 100  −  moves · 5  −  seconds · 2  −  (usedHint ? base/2 : 0))
@@ -195,20 +236,22 @@ score = max(0, boardSize² · 100  −  moves · 5  −  seconds · 2  −  (use
 
 ---
 
-## Tech stack
+## Requirements
 
-- **Swift 6.4**, **iOS 27** (package also builds for macOS so logic tests run on the host)
-- The Composable Architecture · Dependencies · Sharing · SQLiteData · SwiftNavigation
-- **C++17** via Swift/C++ interoperability
-- Swift Testing (`@Test` / `@Suite`) + TCA `TestStore`
+| | |
+|---|---|
+| **Xcode** | 27.0+ |
+| **Swift** | 6.4 (package `swift-tools-version: 6.4`) |
+| **Deployment** | iOS 27 · macOS 27 (the package also builds for macOS so logic tests run on the host) |
+| **C++** | C++23 (`cxxLanguageStandard: .cxx2b`) via Swift/C++ interoperability |
 
 ---
 
 ## Building & running
 
 The app and the Swift package are integrated through **`Slideverse.xcworkspace`**, which
-references both the app project (`App/Slideverse.xcodeproj`) and the local package; the app
-target links the `AppFeature` product. Always open the **workspace**, not the project.
+references both the app project (`App/Slideverse.xcodeproj`) and the local package; the app target
+links the `AppFeature` product. **Always open the workspace, not the project.**
 
 ```sh
 # Build & test the package (logic, solver, persistence, reducers) on the Mac:
@@ -221,9 +264,9 @@ xcodebuild -workspace Slideverse.xcworkspace -scheme Slideverse \
   -skipMacroValidation build
 ```
 
-Or just open `Slideverse.xcworkspace` in Xcode and run — the local Swift package resolves
-automatically, and the database bootstraps on launch. (`-skipMacroValidation` is only needed
-for headless/CI builds; in the GUI you approve the macro plugins once.)
+> [!NOTE]
+> `-skipMacroValidation` is only needed for headless/CI builds. In the Xcode GUI you approve the
+> macro plugins once and run normally.
 
 ---
 
@@ -233,11 +276,9 @@ Tests live alongside each module and run fast (the solver suite scrambles by bou
 stays well under a second):
 
 - **PuzzleCoreTests** — moves, adjacency, win detection, inversion-count solvability, scoring.
-- **PuzzleSolverTests** — the solver's output, applied to a scramble, reaches the solved state
-  (3×3 / 4×4 / 5×5).
+- **PuzzleSolverTests** — the solver's output, applied to a scramble, reaches the solved state (3×3 / 4×4 / 5×5).
 - **ModelsTests** — migrations create the schema; inserts round-trip.
-- **GameFeatureTests** — `TestStore` coverage for undo, pause cancelling the timer, hint,
-  and a winning move persisting a game + unlocking achievements.
+- **GameFeatureTests** — `TestStore` coverage for undo, pause cancelling the timer, hint, and a winning move persisting a game + unlocking achievements.
 
 ---
 
@@ -286,7 +327,9 @@ All player data is **on-device only** — there is no network layer and nothing 
 
 ---
 
-## Credits
+## License
 
-Built with the open-source libraries from [Point-Free](https://www.pointfree.co). Consider
+Slideverse is available under the MIT license. See [LICENSE](LICENSE) for details.
+
+Built with the open-source libraries from [Point-Free](https://www.pointfree.co) — consider
 supporting their work.
