@@ -17,7 +17,7 @@ jobs:
     # runner with Xcode 27 installed, or bump the image label below after GA.
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Select Xcode 27
         uses: maxim-lobanov/setup-xcode@v1
