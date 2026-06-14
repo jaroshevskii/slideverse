@@ -12,6 +12,7 @@ let package = Package(
   products: [
     .library(name: "AppFeature", targets: ["AppFeature"]),
     .library(name: "PuzzleCore", targets: ["PuzzleCore"]),
+    .library(name: "PuzzleSolverLive", targets: ["PuzzleSolverLive"]),
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", .upToNextMinor(from: "1.26.0")),
@@ -27,10 +28,18 @@ let package = Package(
     .target(
       name: "PuzzleSolver",
       dependencies: [
-        "CxxPuzzleSolver",
         "PuzzleCore",
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
+      ]
+    ),
+    .target(
+      name: "PuzzleSolverLive",
+      dependencies: [
+        "CxxPuzzleSolver",
+        "PuzzleCore",
+        "PuzzleSolver",
+        .product(name: "Dependencies", package: "swift-dependencies"),
       ],
       swiftSettings: [.interoperabilityMode(.Cxx)]
     ),
@@ -73,8 +82,7 @@ let package = Package(
         "Styleguide",
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
         .product(name: "SQLiteData", package: "sqlite-data"),
-      ],
-      swiftSettings: [.interoperabilityMode(.Cxx)]
+      ]
     ),
     .target(
       name: "StatsFeature",
@@ -115,8 +123,7 @@ let package = Package(
         "StatsFeature",
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
         .product(name: "Sharing", package: "swift-sharing"),
-      ],
-      swiftSettings: [.interoperabilityMode(.Cxx)]
+      ]
     ),
     .testTarget(
       name: "PuzzleCoreTests",
@@ -124,7 +131,7 @@ let package = Package(
     ),
     .testTarget(
       name: "PuzzleSolverTests",
-      dependencies: ["PuzzleCore", "PuzzleSolver"],
+      dependencies: ["PuzzleCore", "PuzzleSolverLive"],
       swiftSettings: [.interoperabilityMode(.Cxx)]
     ),
     .testTarget(
@@ -147,8 +154,7 @@ let package = Package(
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
         .product(name: "DependenciesTestSupport", package: "swift-dependencies"),
         .product(name: "SQLiteData", package: "sqlite-data"),
-      ],
-      swiftSettings: [.interoperabilityMode(.Cxx)]
+      ]
     ),
   ],
   cxxLanguageStandard: .cxx2b

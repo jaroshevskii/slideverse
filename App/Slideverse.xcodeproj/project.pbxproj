@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BBAF1C4A2FCCE65E002ABBD1 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = BBAF1C492FCCE65E002ABBD1 /* AppFeature */; };
+		BBAF1C512FCCE65E002ABBD1 /* PuzzleSolverLive in Frameworks */ = {isa = PBXBuildFile; productRef = BBAF1C502FCCE65E002ABBD1 /* PuzzleSolverLive */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BBAF1C4A2FCCE65E002ABBD1 /* AppFeature in Frameworks */,
+				BBAF1C512FCCE65E002ABBD1 /* PuzzleSolverLive in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +65,7 @@
 			name = Slideverse;
 			packageProductDependencies = (
 				BBAF1C492FCCE65E002ABBD1 /* AppFeature */,
+				BBAF1C502FCCE65E002ABBD1 /* PuzzleSolverLive */,
 			);
 			productName = Slideverse;
 			productReference = BB0602A92FD8BC280076CF3C /* Slideverse.app */;
@@ -335,6 +338,10 @@
 		BBAF1C492FCCE65E002ABBD1 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
+		};
+		BBAF1C502FCCE65E002ABBD1 /* PuzzleSolverLive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PuzzleSolverLive;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

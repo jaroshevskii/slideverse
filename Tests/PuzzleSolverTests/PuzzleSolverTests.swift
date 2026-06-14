@@ -1,7 +1,7 @@
 import PuzzleCore
 import Testing
 
-@testable import PuzzleSolver
+@testable import PuzzleSolverLive
 
 @Suite struct PuzzleSolverTests {
   /// Applies the solver's move sequence to a board and asserts it reaches the solved state.

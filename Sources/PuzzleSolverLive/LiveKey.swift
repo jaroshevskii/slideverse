@@ -1,3 +1,5 @@
+@_exported import PuzzleSolver
+
 import Dependencies
 
 extension PuzzleSolverClient: DependencyKey {
