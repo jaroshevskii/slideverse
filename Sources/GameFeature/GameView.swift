@@ -49,8 +49,9 @@ public struct GameView: View {
     GeometryReader { proxy in
       let count = store.board.size
       let spacing = Styleguide.tileSpacing
-      let side = (min(proxy.size.width, proxy.size.height)
-        - spacing * CGFloat(count - 1)) / CGFloat(count)
+      let side =
+        (min(proxy.size.width, proxy.size.height)
+          - spacing * CGFloat(count - 1)) / CGFloat(count)
       LazyVGrid(
         columns: Array(repeating: GridItem(.fixed(side), spacing: spacing), count: count),
         spacing: spacing
@@ -90,8 +91,10 @@ public struct GameView: View {
         }
         .disabled(!store.canUndo)
 
-        controlButton(store.isPaused ? "Resume" : "Pause",
-                      systemImage: store.isPaused ? "play.fill" : "pause.fill") {
+        controlButton(
+          store.isPaused ? "Resume" : "Pause",
+          systemImage: store.isPaused ? "play.fill" : "pause.fill"
+        ) {
           store.send(.pauseButtonTapped, animation: .snappy)
         }
         .disabled(store.isGameOver)
@@ -158,9 +161,11 @@ public struct GameView: View {
           .symbolEffect(.bounce, value: store.confettiID)
         Text(store.isNewBest ? "New Best!" : "Solved!")
           .font(.largeTitle.bold())
-        Text("\(store.lastScore) pts · \(store.moveCount) moves · \(timeString(store.secondsElapsed))")
-          .font(.subheadline)
-          .foregroundStyle(.secondary)
+        Text(
+          "\(store.lastScore) pts · \(store.moveCount) moves · \(timeString(store.secondsElapsed))"
+        )
+        .font(.subheadline)
+        .foregroundStyle(.secondary)
         if !store.unlockedAchievements.isEmpty {
           unlockedAchievements
         }

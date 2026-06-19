@@ -60,8 +60,8 @@ public enum GameMode: String, Equatable, Sendable {
 /// Stable identifiers for the achievements the game can unlock.
 public enum AchievementKey: String, CaseIterable, Sendable {
   case firstWin
-  case speedy          // solved under 60 seconds
-  case efficient       // solved without a hint
-  case dailyDevotee    // completed a daily challenge
-  case bigBoard        // solved a 5×5
+  case speedy  // solved under 60 seconds
+  case efficient  // solved without a hint
+  case dailyDevotee  // completed a daily challenge
+  case bigBoard  // solved a 5×5
 }

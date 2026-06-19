@@ -5,8 +5,8 @@ import HapticsClient
 import Models
 import PuzzleCore
 import PuzzleSolver
-import Settings
 import SQLiteData
+import Settings
 
 @Reducer
 public struct Game {
@@ -19,11 +19,11 @@ public struct Game {
 
     public var moveCount: Int
     public var secondsElapsed: Int
-    public var moveHistory: [Int]   // pre-move empty indices, used to undo
+    public var moveHistory: [Int]  // pre-move empty indices, used to undo
 
     public var isGameOver: Bool
     public var isPaused: Bool
-    public var isSolving: Bool       // computing a hint
+    public var isSolving: Bool  // computing a hint
     public var isAutoSolving: Bool
     public var hintIndex: Int?
     public var usedHint: Bool
@@ -104,7 +104,7 @@ public struct Game {
           await send(.autoSolveResponse(puzzleSolver.solve(board)))
         }
 
-      case let .autoSolveResponse(moves):
+      case .autoSolveResponse(let moves):
         guard state.isAutoSolving, !moves.isEmpty else {
           state.isAutoSolving = false
           return .none
@@ -125,12 +125,12 @@ public struct Game {
         }
         return .none
 
-      case let .boardSizeChanged(size):
+      case .boardSizeChanged(let size):
         guard size != state.boardSize else { return .none }
         state.boardSize = size
         return startNewGame(&state)
 
-      case let .gamePersisted(isNewBest, achievements):
+      case .gamePersisted(let isNewBest, let achievements):
         state.isNewBest = isNewBest
         state.unlockedAchievements = achievements
         state.confettiID += 1
@@ -147,7 +147,7 @@ public struct Game {
           await send(.hintResponse(puzzleSolver.solve(board)))
         }
 
-      case let .hintResponse(moves):
+      case .hintResponse(let moves):
         state.isSolving = false
         state.hintIndex = moves.first
         return .none
@@ -166,7 +166,7 @@ public struct Game {
         }
         return startTimer()
 
-      case let .tileTapped(index):
+      case .tileTapped(let index):
         guard !state.isGameOver, !state.isPaused, !state.isAutoSolving else { return .none }
         let emptyBefore = state.board.emptyIndex
         guard state.board.move(at: index) else { return .none }
@@ -315,7 +315,8 @@ private func dayKey(_ date: Date) -> String {
   var calendar = Calendar(identifier: .gregorian)
   calendar.timeZone = TimeZone(identifier: "UTC") ?? .current
   let components = calendar.dateComponents([.year, .month, .day], from: date)
-  return String(format: "%04d-%02d-%02d", components.year ?? 0, components.month ?? 0, components.day ?? 0)
+  return String(
+    format: "%04d-%02d-%02d", components.year ?? 0, components.month ?? 0, components.day ?? 0)
 }
 
 private func seed(from key: String) -> UInt64 {

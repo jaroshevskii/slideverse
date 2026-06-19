@@ -1,6 +1,5 @@
-@_exported import PuzzleSolver
-
 import Dependencies
+@_exported import PuzzleSolver
 
 extension PuzzleSolverClient: DependencyKey {
   public static let liveValue = Self(

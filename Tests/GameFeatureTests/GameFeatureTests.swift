@@ -30,7 +30,9 @@ struct GameTests {
   }
 
   @Test func nonWinningMoveRecordsHistory() async {
-    let store = TestStore(initialState: nearWinState()) { Game() } withDependencies: {
+    let store = TestStore(initialState: nearWinState()) {
+      Game()
+    } withDependencies: {
       $0.audioPlayer = .noop
       $0.haptics = .noop
     }
@@ -42,7 +44,9 @@ struct GameTests {
   }
 
   @Test func undoRestoresPreviousBoard() async {
-    let store = TestStore(initialState: nearWinState()) { Game() } withDependencies: {
+    let store = TestStore(initialState: nearWinState()) {
+      Game()
+    } withDependencies: {
       $0.audioPlayer = .noop
       $0.haptics = .noop
     }
@@ -60,7 +64,9 @@ struct GameTests {
 
   @Test func pauseCancelsTimer() async {
     let clock = TestClock()
-    let store = TestStore(initialState: nearWinState()) { Game() } withDependencies: {
+    let store = TestStore(initialState: nearWinState()) {
+      Game()
+    } withDependencies: {
       $0.continuousClock = clock
       $0.audioPlayer = .noop
       $0.haptics = .noop
@@ -74,7 +80,9 @@ struct GameTests {
   }
 
   @Test func hintHighlightsNextMove() async {
-    let store = TestStore(initialState: nearWinState()) { Game() } withDependencies: {
+    let store = TestStore(initialState: nearWinState()) {
+      Game()
+    } withDependencies: {
       $0.audioPlayer = .noop
       $0.haptics = .noop
       $0.puzzleSolver.solve = { _ in [15] }
@@ -90,7 +98,9 @@ struct GameTests {
   }
 
   @Test func winningMovePersistsAndUnlocksAchievements() async {
-    let store = TestStore(initialState: nearWinState()) { Game() } withDependencies: {
+    let store = TestStore(initialState: nearWinState()) {
+      Game()
+    } withDependencies: {
       $0.audioPlayer = .noop
       $0.haptics = .noop
     }

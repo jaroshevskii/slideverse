@@ -15,8 +15,11 @@ let package = Package(
     .library(name: "PuzzleSolverLive", targets: ["PuzzleSolverLive"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", .upToNextMinor(from: "1.26.0")),
-    .package(url: "https://github.com/pointfreeco/swift-dependencies", .upToNextMinor(from: "1.13.0")),
+    .package(
+      url: "https://github.com/pointfreeco/swift-composable-architecture",
+      .upToNextMinor(from: "1.26.0")),
+    .package(
+      url: "https://github.com/pointfreeco/swift-dependencies", .upToNextMinor(from: "1.13.0")),
     .package(url: "https://github.com/pointfreeco/swift-navigation", .upToNextMinor(from: "2.8.0")),
     .package(url: "https://github.com/pointfreeco/swift-sharing", .upToNextMinor(from: "2.8.1")),
     .package(url: "https://github.com/pointfreeco/sqlite-data", .upToNextMinor(from: "1.6.5")),
@@ -53,7 +56,7 @@ let package = Package(
     .target(
       name: "Settings",
       dependencies: [
-        .product(name: "Sharing", package: "swift-sharing"),
+        .product(name: "Sharing", package: "swift-sharing")
       ]
     ),
     .target(

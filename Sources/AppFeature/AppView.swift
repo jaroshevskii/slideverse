@@ -24,16 +24,16 @@ public struct AppView: View {
       )
     } destination: { store in
       switch store.case {
-      case let .game(store):
+      case .game(let store):
         GameView(store: store)
           #if os(iOS)
             .navigationTransition(.zoom(sourceID: "play", in: playTransition))
           #endif
-      case let .howToPlay(store):
+      case .howToPlay(let store):
         HowToPlayView(store: store)
-      case let .settings(store):
+      case .settings(let store):
         SettingsView(store: store)
-      case let .stats(store):
+      case .stats(let store):
         StatsView(store: store)
       }
     }

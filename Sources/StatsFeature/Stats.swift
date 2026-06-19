@@ -51,7 +51,8 @@ public struct StatsView: View {
 
   private var bestsSection: some View {
     Section("Best times") {
-      let bySize = Dictionary(grouping: store.games.filter { $0.mode == GameMode.classic.rawValue }) {
+      let bySize = Dictionary(grouping: store.games.filter { $0.mode == GameMode.classic.rawValue })
+      {
         $0.boardSize
       }
       if bySize.isEmpty {
