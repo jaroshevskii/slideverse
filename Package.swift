@@ -1,4 +1,4 @@
-// swift-tools-version: 6.4
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
   name: "slideverse",
   platforms: [
-    .iOS(.v27),
-    .macOS(.v27),
+    .iOS(.v26),
+    .macOS(.v26),
   ],
   products: [
     .library(name: "AppFeature", targets: ["AppFeature"]),
@@ -157,5 +157,5 @@ let package = Package(
       ]
     ),
   ],
-  cxxLanguageStandard: .cxx2b
+  cxxLanguageStandard: .cxx17
 )

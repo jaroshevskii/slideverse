@@ -5,8 +5,8 @@
 **A modern sliding-tile puzzle for iOS — pure Swift logic, an optimal C++ solver, and a hyper-modular Composable Architecture.**
 
 [![CI](https://github.com/jaroshevskii/slideverse/actions/workflows/ci.yml/badge.svg)](https://github.com/jaroshevskii/slideverse/actions/workflows/ci.yml)
-[![Swift 6.4](https://img.shields.io/badge/Swift-6.4-F05138?logo=swift&logoColor=white)](https://swift.org)
-[![Platforms](https://img.shields.io/badge/Platforms-iOS%2027%20%7C%20macOS%2027-0A84FF?logo=apple&logoColor=white)](https://developer.apple.com)
+[![Swift 6.2](https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white)](https://swift.org)
+[![Platforms](https://img.shields.io/badge/Platforms-iOS%2026%20%7C%20macOS%2026-0A84FF?logo=apple&logoColor=white)](https://developer.apple.com)
 [![Architecture](https://img.shields.io/badge/Architecture-TCA-1B1B1F)](https://github.com/pointfreeco/swift-composable-architecture)
 [![License](https://img.shields.io/badge/License-MIT-success)](LICENSE)
 
@@ -47,7 +47,7 @@ lifting where native speed actually matters.
 | 📅 **Daily Challenge** | A date-seeded board that's identical for everyone on a given day. |
 | 🏆 **Scoring, stats & streaks** | Every finished game is persisted locally; best times per size, high score, daily streak. |
 | 🎖️ **Achievements** | First Win, Speedy (under 1:00), No Hints, Daily Devotee, Big Board (5×5). |
-| ✨ **iOS 27 polish** | Zoom navigation transitions, `matchedGeometryEffect` sliding, `numericText` transitions, SF Symbol effects, confetti on victory. |
+| ✨ **iOS 26 polish** | Zoom navigation transitions, `matchedGeometryEffect` sliding, `numericText` transitions, SF Symbol effects, confetti on victory. |
 | ⚙️ **Settings** | Light/dark/system appearance, sound effects, haptics, and default board size — persisted with `@Shared`. |
 
 ---
@@ -240,10 +240,10 @@ score = max(0, boardSize² · 100  −  moves · 5  −  seconds · 2  −  (use
 
 | | |
 |---|---|
-| **Xcode** | 27.0+ |
-| **Swift** | 6.4 (package `swift-tools-version: 6.4`) |
-| **Deployment** | iOS 27 · macOS 27 (the package also builds for macOS so logic tests run on the host) |
-| **C++** | C++23 (`cxxLanguageStandard: .cxx2b`) via Swift/C++ interoperability |
+| **Xcode** | 26.0+ |
+| **Swift** | 6.2 (package `swift-tools-version: 6.2`) |
+| **Deployment** | iOS 26 · macOS 26 (the package also builds for macOS so logic tests run on the host) |
+| **C++** | C++17 (`cxxLanguageStandard: .cxx17`) via Swift/C++ interoperability |
 
 ---
 
