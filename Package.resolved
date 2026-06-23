@@ -1,5 +1,5 @@
 {
-  "originHash" : "a5ed06c58696b0622e00f01cddd7a568ffd0bd5ed8eba8e01c6ca0a75ec2af19",
+  "originHash" : "306b192d1978e18dd04f0e76a7b3eee56eb0f5eaa1725e8beb1f30fbdd3b62d7",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -20,12 +20,21 @@
       }
     },
     {
+      "identity" : "opencombine",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OpenCombine/OpenCombine.git",
+      "state" : {
+        "revision" : "8576f0d579b27020beccbccc3ea6844f3ddfc2c2",
+        "version" : "0.14.0"
+      }
+    },
+    {
       "identity" : "sqlite-data",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/sqlite-data",
       "state" : {
-        "revision" : "98fa1def404b6ea7355bcdbe9b804bd370f5fc0e",
-        "version" : "1.6.5"
+        "revision" : "0c79d7a5748fc6d9ce7a1ba2b50f31b175305049",
+        "version" : "1.6.6"
       }
     },
     {
