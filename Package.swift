@@ -22,7 +22,7 @@ let package = Package(
       url: "https://github.com/pointfreeco/swift-dependencies", .upToNextMinor(from: "1.14.1")),
     .package(url: "https://github.com/pointfreeco/swift-navigation", .upToNextMinor(from: "2.8.0")),
     .package(url: "https://github.com/pointfreeco/swift-sharing", .upToNextMinor(from: "2.9.1")),
-    .package(url: "https://github.com/pointfreeco/sqlite-data", .upToNextMinor(from: "1.6.5")),
+    .package(url: "https://github.com/pointfreeco/sqlite-data", .upToNextMinor(from: "1.9.0")),
   ],
   targets: [
     .target(name: "PuzzleCore"),
